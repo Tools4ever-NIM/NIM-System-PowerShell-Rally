@@ -75,7 +75,8 @@ function Idm-SystemInfo {
             }
             @{
                 name = 'client_secret'
-                type = 'password'
+                type = 'textbox'
+                password = $true
                 label = 'Client Secret'
                 description = 'Authentication: Client Secret'
                 value = ''
