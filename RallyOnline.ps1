@@ -1,5 +1,5 @@
 #
-# RallyOnline.ps1 - RallyOnline
+# Rally.ps1 - Rally API
 #
 
 
@@ -75,7 +75,7 @@ function Idm-SystemInfo {
             }
             @{
                 name = 'client_secret'
-                type = 'textbox'
+                type = 'password'
                 label = 'Client Secret'
                 description = 'Authentication: Client Secret'
                 value = ''
@@ -231,7 +231,6 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
 
                 log info "Total Results to process: $($response.data.count)"
                 foreach($rowItem in $response.data) {
-                    log info ($rowItem | ConvertTo-Json)
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
@@ -325,7 +324,6 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
 
                 log info "Total Results to process: $($response.data.count)"
                 foreach($rowItem in $response.data) {
-                    log info ($rowItem | ConvertTo-Json)
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
