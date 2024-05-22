@@ -1,5 +1,5 @@
 #
-# Rally.ps1 - Rally API
+# RallyOnline.ps1 - Rally Online
 #
 
 
