@@ -21,6 +21,8 @@ $Properties = @{
         @{ name = 'Last Name';           						        options = @('default')}
         @{ name = 'Position/Role';           							options = @('default')}
         @{ name = 'Code of Conduct';           						options = @('default')}
+		@{ name = 'Date of Birth';           						options = @('default')}
+        @{ name = 'Personal Email Address';           						options = @('default')}
     )
     NewEmployees = @(
         @{ name = 'UID';           										options = @('default','key')}    
@@ -46,6 +48,8 @@ $Properties = @{
         @{ name = 'Emergency Contact Phone 2';           				options = @('default')}
         @{ name = 'Additional Emergency Info';           				options = @('default')}
         @{ name = 'Code of Conduct';           						options = @('default')}
+		@{ name = 'Date of Birth';           						options = @('default')}
+        @{ name = 'Personal Email Address';           						options = @('default')}
     )
 }
 
@@ -235,8 +239,13 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
-                        $row.($prop.Name) = $prop.Value
-                        }
+                        if(!$properties.contains($prop.Name)) { continue }
+						if($prop.Name -eq 'Date') {
+							$row.($prop.Name) = try { ([datetime]::ParseExact($prop.Value, "MMM d, yyyy h:mmtt", $null)).ToString("yyyy-MM-dd HH:mm") } catch{}
+						} else {
+							$row.($prop.Name) = $prop.Value
+						}
+					}
 
                     $row
                 }
@@ -313,9 +322,8 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
                         $splat["proxyCredential"] = New-Object System.Management.Automation.PSCredential ($system_params.proxy_username, (ConvertTo-SecureString $system_params.proxy_password -AsPlainText -Force) )
                     }
                 }
-                
-                $response = (Invoke-RestMethod @splat -ErrorAction Stop) | ConvertFrom-Json
-                
+                $response = Invoke-RestMethod @splat -ErrorAction Stop
+
                 $properties = ($Global:Properties.$Class).name
                 $hash_table = [ordered]@{}
 
@@ -328,12 +336,18 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
-                        $row.($prop.Name) = $prop.Value
+						if(!$properties.contains($prop.Name)) { continue }
+                        if($prop.Name -eq 'Date') {
+							$row.($prop.Name) = try { ([datetime]::ParseExact($prop.Value, "MMM d, yyyy h:mmtt", $null)).ToString("yyyy-MM-dd HH:mm") } catch{}
+						} else {
+							$row.($prop.Name) = $prop.Value
+						}
+						
+						
                         }
 
                     $row
-                }
-                
+                } 
             }
             catch [System.Net.WebException] {
                 $message = "Error : $($_)"
