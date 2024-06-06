@@ -239,7 +239,10 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
-                        if(!$properties.contains($prop.Name)) { continue }
+                        if(!$properties.contains($prop.Name)) { 
+							log warn "$($prop.Name) not configured, skipping"
+							continue
+						}
 						if($prop.Name -eq 'Date') {
 							$row.($prop.Name) = try { ([datetime]::ParseExact($prop.Value, "MMM d, yyyy h:mmtt", $null)).ToString("yyyy-MM-dd HH:mm") } catch{}
 						} else {
@@ -336,7 +339,10 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
                     $row = New-Object -TypeName PSObject -Property $hash_table
 
                     foreach($prop in $rowItem.PSObject.properties) {
-						if(!$properties.contains($prop.Name)) { continue }
+						if(!$properties.contains($prop.Name)) { 
+							log warn "$($prop.Name) not configured, skipping"
+							continue
+						}
                         if($prop.Name -eq 'Date') {
 							$row.($prop.Name) = try { ([datetime]::ParseExact($prop.Value, "MMM d, yyyy h:mmtt", $null)).ToString("yyyy-MM-dd HH:mm") } catch{}
 						} else {
